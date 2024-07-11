@@ -1,16 +1,42 @@
 name: Generate ASCII
 on: push
 jobs:
-  ascii-job:
+  build-job:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v3
 
-      - name: List all files
-        run: ls -ltra
+      - name: Install Cowsay Programme
+        run: sudo apt-get install cowsay -y
 
-      - name: Execute Shell Command
-        run: |
-          chmod +x ascii.sh
-          ./ascii.sh
+      - name: Execute Cowsay cmd
+        run: cowsay -f dragon "Run for cover, I am a DRAGON....RAWR">> dragon.txt
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: dragon-text-file
+          path: dragon.txt
+
+  test-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Downlaod dragon text file
+        uses: actions/download-artifact@v3
+        with:
+          name: dragon-text-file
+
+      - name: Check File Exist
+        run: grep -i "dragon" dragon.txt
+
+  Deploy-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Downlaod dragon text file
+        uses: actions/download-artifact@v3
+        with:
+          name: dragon-text-file
+
+      - name: Check File Exist
+        run: cat dragon.txt
