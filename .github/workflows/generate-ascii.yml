@@ -20,6 +20,7 @@ jobs:
           path: dragon.txt
 
   test-job:
+    needs: build-job
     runs-on: ubuntu-latest
     steps:
       - name: Downlaod dragon text file
@@ -31,6 +32,7 @@ jobs:
         run: grep -i "dragon" dragon.txt
 
   Deploy-job:
+    needs: test-job
     runs-on: ubuntu-latest
     steps:
       - name: Downlaod dragon text file
